@@ -13,3 +13,6 @@ Russian TOR support
 
 # DISCLAIMER
 ONLY FOR EDUCATIONAL PURPOSES!
+
+# HOW-TO
+Just start compiled code :)
