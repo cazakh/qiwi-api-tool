@@ -3,9 +3,14 @@ import time
 import json
 
 if "__main__" == __name__:
-    api_access_token = json.load(open('config.json'))['main-token']
-    login = json.load(open('config.json'))['main-number']
-    tel = json.load(open('config.json'))['number-client']
+    api_access_token = "0"
+    login = "0"
+    tel = "0"
+    def getVars():
+        api_access_token = json.load(open('config.json'))['main-token']
+        login = json.load(open('config.json'))['main-number']
+        tel = json.load(open('config.json'))['number-client']
+        print("Переводим с" + str(login) + " на " + str(tel))
 
     # Баланс QIWI Кошелька
     def balance(login, api_access_token):
@@ -42,6 +47,8 @@ if "__main__" == __name__:
         return c_online.json()['qwCommission']['amount']
 
     def summa():
+        if api_access_token == "0":
+            getVars();
         summ = balance(login,api_access_token)['accounts'][0]['balance']['amount']
         if(summ > 2):
             print("-----------------------------------------------------------------------------------------------------------")
