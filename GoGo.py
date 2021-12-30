@@ -50,4 +50,4 @@ for i in range(0, n):
     j.write("\n}")
     j.close
     getFrom = putTo
-    #QiwiMaster.summa()
+    QiwiMaster.summa()
