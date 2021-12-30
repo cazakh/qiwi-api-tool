@@ -6,18 +6,22 @@ if "__main__" == __name__:
     api_access_token = "0"
     login = "0"
     tel = "0"
+    proxies = {
+        "https": "https://10.10.1.10:1080"
+    }
     def getVars():
         api_access_token = json.load(open('config.json'))['main-token']
         login = json.load(open('config.json'))['main-number']
         tel = json.load(open('config.json'))['number-client']
-        print("Переводим с" + str(login) + " на " + str(tel))
-
+        proxy = json.load(open('config.json'))['proxy']
+        print("Переводим с" + str(login) + " на " + str(tel) + " с прокси " + proxy)
+        proxies["https"] = proxy
     # Баланс QIWI Кошелька
     def balance(login, api_access_token):
         s = requests.Session()
         s.headers['Accept']= 'application/json'
         s.headers['authorization'] = 'Bearer ' + api_access_token  
-        b = s.get('https://edge.qiwi.com/funding-sources/v2/persons/' + login + '/accounts')
+        b = s.get('https://edge.qiwi.com/funding-sources/v2/persons/' + login + '/accounts', proxies=proxy)
         return b.json()
 
     # Перевод на QIWI Кошелек
@@ -32,7 +36,7 @@ if "__main__" == __name__:
         postjson['sum']['amount'] = sum_p2p
         postjson['sum']['currency'] = '643'
         postjson['fields']['account'] = to_qw
-        res = s.post('https://edge.qiwi.com/sinap/api/v2/terms/99/payments',json = postjson)
+        res = s.post('https://edge.qiwi.com/sinap/api/v2/terms/99/payments',json = postjson, proxies=proxy)
         return res.json()
 
     # Тарифные комиссии
@@ -43,7 +47,7 @@ if "__main__" == __name__:
         postjson = {"account":"","paymentMethod":{"type":"Account","accountId":"643"}, "purchaseTotals":{"total":{"amount":"","currency":"643"}}}
         postjson['account'] = to_account
         postjson['purchaseTotals']['total']['amount'] = sum_pay
-        c_online = s.post('https://edge.qiwi.com/sinap/providers/'+prv_id+'/onlineCommission',json = postjson)
+        c_online = s.post('https://edge.qiwi.com/sinap/providers/'+prv_id+'/onlineCommission',json = postjson, proxies=proxy)
         return c_online.json()['qwCommission']['amount']
 
     def summa():

@@ -67,35 +67,6 @@ class api:
 
         self.sessionid = json["sessionid"]
 
-    def register(self, user, password, license, hwid=None):
-        if hwid is None:
-            hwid = others.get_hwid()
-
-        init_iv = SHA256.new(str(uuid4())[:8].encode()).hexdigest()
-
-        post_data = {
-            "type": binascii.hexlify(("register").encode()),
-            "username": encryption.encrypt(user, self.enckey, init_iv),
-            "pass": encryption.encrypt(password, self.enckey, init_iv),
-            "key": encryption.encrypt(license, self.enckey, init_iv),
-            "hwid": encryption.encrypt(hwid, self.enckey, init_iv),
-            "sessionid": binascii.hexlify(self.sessionid.encode()),
-            "name": binascii.hexlify(self.name.encode()),
-            "ownerid": binascii.hexlify(self.ownerid.encode()),
-            "init_iv": init_iv
-        }
-
-        response = self.__do_request(post_data)
-
-        response = encryption.decrypt(response, self.enckey, init_iv)
-
-        json = jsond.loads(response)
-
-        if json["success"]:
-            print("successfully registered")
-        else:
-            print(json["message"])
-            sys.exit()
 
     def license(self, key, hwid=None):
         if hwid is None:
